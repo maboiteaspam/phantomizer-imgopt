@@ -4,16 +4,15 @@ module.exports = function(grunt) {
 
     grunt.registerMultiTask("phantomizer-imgopt", "Optimize png/jpeg pictures", function () {
 
-        var ph_libutil = require("phantomizer-libutil")
-        var path = require('path')
+        var ph_libutil = require("phantomizer-libutil");
+        var path = require('path');
 
         var sub_tasks = []
-        var current_grunt_task = this.nameArgs
+        var current_grunt_task = this.nameArgs;
 
-        var meta = ph_libutil.meta
+        var meta_factory = ph_libutil.meta;
 
-        var wd = process.cwd()
-        var meta_manager = new meta( wd )
+        var wd = process.cwd();
 
         function find_in_paths(paths, src){
             for( var t in paths ){
@@ -35,30 +34,33 @@ module.exports = function(grunt) {
         });
 
         grunt.verbose.writeflags(options, 'Options'); // debug call
-        var out_dir = options.out_dir
-        var meta_dir = options.meta_dir
-        var paths = options.paths
-        var files = options.in_files || {}
-        var sub_task_options = {}
+        var out_dir = options.out_dir;
+        var meta_dir = options.meta_dir;
+        var paths = options.paths;
+        var files = options.in_files || {};
+        var sub_task_options = {};
+
+
+        var meta_manager = new meta_factory( wd, meta_dir );
 
 
         for( var src_file in files ){
-            var out_file = out_dir+"/"+files[src_file]
-            var meta_file = meta_dir+"/"+files[src_file]+".meta"
+            var out_file = out_dir+"/"+files[src_file];
+            var meta_file = "/"+files[src_file]+".meta";
 
             if( meta_manager.is_fresh(meta_file) == false ){
 
                 var file = find_in_paths(paths,src_file);
 
-                var deps = []
-                deps.push(file)
+                var deps = [];
+                deps.push(file);
 
                 if ( grunt.file.exists(process.cwd()+"/Gruntfile.js")) {
                     deps.push(process.cwd()+"/Gruntfile.js")
                 }
-                deps.push(__filename)
+                deps.push(__filename);
 
-                var sub_task_name = "jit"+sub_tasks.length
+                var sub_task_name = "jit"+sub_tasks.length;
                 sub_task_options[sub_task_name] = {
                     options: {
                         optimizationLevel: options.optimizationLevel
@@ -67,14 +69,14 @@ module.exports = function(grunt) {
                     files: {
                     }
                 }
-                sub_task_options[sub_task_name].files[out_file] = file
+                sub_task_options[sub_task_name].files[out_file] = file;
                 grunt.log.ok("Creating "+out_file)
                 grunt.log.ok("optimizationLevel:"+options.optimizationLevel)
 
                 // create a cache entry, so that later we can regen or check freshness
-                var entry = meta_manager.create(deps)
-                entry.require_task(current_grunt_task, options)
-                entry.save(meta_file)
+                var entry = meta_manager.create(deps);
+                entry.require_task(current_grunt_task, options);
+                entry.save(meta_file);
 
                 //-
 
