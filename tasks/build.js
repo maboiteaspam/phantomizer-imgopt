@@ -9,6 +9,7 @@ module.exports = function(grunt) {
 
         var sub_tasks = []
         var current_grunt_task = this.nameArgs;
+        var user_config = grunt.config();
 
         var meta_factory = ph_libutil.meta;
 
@@ -57,6 +58,9 @@ module.exports = function(grunt) {
 
                 if ( grunt.file.exists(process.cwd()+"/Gruntfile.js")) {
                     deps.push(process.cwd()+"/Gruntfile.js")
+                }
+                if ( grunt.file.exists(user_config.project_dir+"/../config.json")) {
+                    deps.push( user_config.project_dir+"/../config.json")
                 }
                 deps.push(__filename);
 
