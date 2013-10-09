@@ -1,23 +1,22 @@
 {
     "name": "phantomizer-imgopt",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "private": true,
     "description": "Image minification support for phantomizer",
     "keywords": "",
     "bugs": {
-        "url" : "http://github.com/maboiteaspam/phantomizer-imgopt/issues",
-        "email" : "none@host.com"
+        "url": "http://github.com/maboiteaspam/phantomizer-imgopt/issues",
+        "email": "none@host.com"
     },
-    "license" : "mit",
-    "repository" :{
-        "type" : "git",
-        "url" : "http://github.com/maboiteaspam/phantomizer-imgopt.git"
+    "license": "mit",
+    "repository": {
+        "type": "git",
+        "url": "http://github.com/maboiteaspam/phantomizer-imgopt.git"
     },
     "dependencies": {
         "grunt": "0.4.x",
-        "grunt-contrib-imagemin": "0.2.x"
-        ,"phantomizer-libutil": "maboiteaspam/phantomizer-libutil"
+        "grunt-contrib-imagemin": "0.2.x",
+        "phantomizer-libutil": "maboiteaspam/phantomizer-libutil"
     },
-    "devDependencies": {
-    }
+    "devDependencies": {}
 }
