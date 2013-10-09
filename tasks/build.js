@@ -117,12 +117,15 @@ module.exports = function(grunt) {
             var p = paths[n];
             var sub_task_name = "imgmin"+sub_tasks.length;
 
-            var sub_task_options = {
+            p = path.normalize(p);
+
+            var sub_task_options = {};
+            sub_task_options[sub_task_name] = {
                 files: [{
                     expand: true,
                     cwd: p,
                     src: ['**/*.{png,jpg,jpeg,gif}'],
-                    dest: ''
+                    dest: p
                 }]
             };
 
