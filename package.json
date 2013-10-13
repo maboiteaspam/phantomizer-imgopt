@@ -1,6 +1,6 @@
 {
     "name": "phantomizer-imgopt",
-    "version": "0.1.2",
+    "version": "0.1.3",
     "private": true,
     "description": "Image minification support for phantomizer",
     "keywords": "",
