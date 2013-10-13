@@ -102,16 +102,22 @@ module.exports = function(grunt) {
     grunt.registerMultiTask("phantomizer-dir-imgopt", "Optimize png/jpeg pictures", function () {
 
         var sub_tasks = []
+        var current_target = this.target;
 
         var options = this.options({
-            optimizationLevel: 0
+            optimizationLevel: 7
             ,"progressive":true
+            ,"pngquant":true
+            ,"interlaced":true
             ,paths: []
+            ,out_path: ""
         });
 
         grunt.verbose.writeflags(options, 'Options');
 
         var paths = options.paths;
+        var out_path = options.out_path;
+        if(paths.toLowerCase) paths = [paths];
 
         for( var n in paths ){
             var p = paths[n];
@@ -119,16 +125,24 @@ module.exports = function(grunt) {
 
             p = path.normalize(p);
 
-            var sub_task_options = {};
+            var sub_task_options = grunt.config.get("imagemin") || {};
+            sub_task_options = clone_subtasks_options(sub_task_options, sub_task_name, current_target);
+            sub_task_options[sub_task_name].options.verbose = true;
             sub_task_options[sub_task_name] = {
+                options: {
+                    optimizationLevel: options.optimizationLevel,
+                    progressive: options.progressive,
+                    pngquant: options.pngquant,
+                    interlaced: options.interlaced
+                },
                 files: [{
                     expand: true,
-                    cwd: p,
+                    cwd: p+'',
                     src: ['**/*.{png,jpg,jpeg,gif}'],
-                    dest: p
+                    dest: out_path
                 }]
             };
-
+            grunt.log.ok("Optimizing images\n\t"+p);
             grunt.config.set("imagemin", sub_task_options)
             sub_tasks.push( "imagemin"+":"+sub_task_name )
         }
@@ -136,5 +150,12 @@ module.exports = function(grunt) {
         grunt.task.run( sub_tasks )
     });
 
+    function clone_subtasks_options(task_options, task_name, current_target){
+        var _ = grunt.util._;
+        if( task_options[current_target] ) task_options[task_name] = _.clone(task_options[current_target], true);
+        if( !task_options[task_name] ) task_options[task_name] = {};
+        if( !task_options[task_name].options ) task_options[task_name].options = {};
+        return task_options;
+    }
 
 };
