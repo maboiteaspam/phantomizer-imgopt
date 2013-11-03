@@ -40,8 +40,8 @@ module.exports = function(grunt) {
 
         for( var src_file in files ){
             var out_file = out_dir+"/"+files[src_file];
-            var meta_file = "/"+files[src_file]+".meta";
-            var meta_infile = src_file+".meta";
+            var meta_file = "/"+files[src_file]+"";
+            var meta_infile = src_file+"";
 
             if( meta_manager.is_fresh(meta_file) == false
                 && meta_manager.is_fresh(meta_infile,current_task_name+src_file) == false ){
