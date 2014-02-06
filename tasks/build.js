@@ -105,7 +105,7 @@ module.exports = function(grunt) {
     var current_target = this.target;
 
     var options = this.options({
-      optimizationLevel: 7
+      optimizationLevel: 2
       ,"progressive":true
       ,"pngquant":true
       ,"interlaced":true
