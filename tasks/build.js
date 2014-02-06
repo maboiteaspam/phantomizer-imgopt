@@ -20,6 +20,7 @@ module.exports = function(grunt) {
     var options = this.options({
       optimizationLevel: 0
       ,"progressive":true
+      ,"cache":false
       ,out_dir: ""
       ,meta_dir: ""
       ,paths: []
@@ -62,6 +63,7 @@ module.exports = function(grunt) {
         var sub_task_name = "jit"+sub_tasks.length;
         sub_task_options[sub_task_name] = {
           options: {
+            cache: options.cache,
             optimizationLevel: options.optimizationLevel
             ,progressive: options.progressive
           },
@@ -107,6 +109,7 @@ module.exports = function(grunt) {
     var options = this.options({
       optimizationLevel: 2
       ,"progressive":true
+      ,"cache":false
       ,"pngquant":true
       ,"interlaced":true
       ,paths: []
@@ -130,6 +133,7 @@ module.exports = function(grunt) {
       sub_task_options[sub_task_name].options.verbose = true;
       sub_task_options[sub_task_name] = {
         options: {
+          cache: options.cache,
           optimizationLevel: options.optimizationLevel,
           progressive: options.progressive,
           pngquant: options.pngquant,
