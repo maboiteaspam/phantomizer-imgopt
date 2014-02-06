@@ -27,84 +27,86 @@
 
 module.exports = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(grunt)</span> {</span>
 
-    <span class="hljs-keyword">var</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">'path'</span>);
-    <span class="hljs-keyword">var</span> ph_libutil = <span class="hljs-built_in">require</span>(<span class="hljs-string">"phantomizer-libutil"</span>);
+  <span class="hljs-keyword">var</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">'path'</span>);
+  <span class="hljs-keyword">var</span> ph_libutil = <span class="hljs-built_in">require</span>(<span class="hljs-string">"phantomizer-libutil"</span>);
 
-    grunt.registerMultiTask(<span class="hljs-string">"phantomizer-imgopt"</span>, <span class="hljs-string">"Optimize png/jpeg pictures"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
-
-
-        <span class="hljs-keyword">var</span> sub_tasks = []
-        <span class="hljs-keyword">var</span> current_grunt_task = <span class="hljs-keyword">this</span>.nameArgs;
-        <span class="hljs-keyword">var</span> user_config = grunt.config();
-
-        <span class="hljs-keyword">var</span> meta_factory = ph_libutil.meta;
-
-        <span class="hljs-keyword">var</span> wd = process.cwd();
+  grunt.registerMultiTask(<span class="hljs-string">"phantomizer-imgopt"</span>, <span class="hljs-string">"Optimize png/jpeg pictures"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
 
 
-        <span class="hljs-keyword">var</span> options = <span class="hljs-keyword">this</span>.options({
-            optimizationLevel: <span class="hljs-number">0</span>
-            ,<span class="hljs-string">"progressive"</span>:<span class="hljs-literal">true</span>
-            ,out_dir: <span class="hljs-string">""</span>
-            ,meta_dir: <span class="hljs-string">""</span>
-            ,paths: []
-            ,in_files: {}
-        });
+    <span class="hljs-keyword">var</span> sub_tasks = []
+    <span class="hljs-keyword">var</span> current_grunt_task = <span class="hljs-keyword">this</span>.nameArgs;
+    <span class="hljs-keyword">var</span> user_config = grunt.config();
 
-        grunt.verbose.writeflags(options, <span class="hljs-string">'Options'</span>); <span class="hljs-comment">// debug call</span>
-        <span class="hljs-keyword">var</span> out_dir = options.out_dir;
-        <span class="hljs-keyword">var</span> meta_dir = options.meta_dir;
-        <span class="hljs-keyword">var</span> paths = options.paths;
-        <span class="hljs-keyword">var</span> files = options.in_files || {};
-        <span class="hljs-keyword">var</span> sub_task_options = {};
+    <span class="hljs-keyword">var</span> meta_factory = ph_libutil.meta;
 
-        <span class="hljs-keyword">var</span> current_task_name = <span class="hljs-string">"phantomizer-imgopt"</span>;
+    <span class="hljs-keyword">var</span> wd = process.cwd();
 
 
-        <span class="hljs-keyword">var</span> meta_manager = <span class="hljs-keyword">new</span> meta_factory( wd, meta_dir );
+    <span class="hljs-keyword">var</span> options = <span class="hljs-keyword">this</span>.options({
+      optimizationLevel: <span class="hljs-number">0</span>
+      ,<span class="hljs-string">"progressive"</span>:<span class="hljs-literal">true</span>
+      ,<span class="hljs-string">"cache"</span>:<span class="hljs-literal">false</span>
+      ,out_dir: <span class="hljs-string">""</span>
+      ,meta_dir: <span class="hljs-string">""</span>
+      ,paths: []
+      ,in_files: {}
+    });
 
-        <span class="hljs-keyword">for</span>( <span class="hljs-keyword">var</span> src_file <span class="hljs-keyword">in</span> files ){
-            <span class="hljs-keyword">var</span> out_file = out_dir+<span class="hljs-string">"/"</span>+files[src_file];
-            <span class="hljs-keyword">var</span> meta_file = <span class="hljs-string">"/"</span>+files[src_file]+<span class="hljs-string">""</span>;
-            <span class="hljs-keyword">var</span> meta_infile = src_file+<span class="hljs-string">""</span>;
+    grunt.verbose.writeflags(options, <span class="hljs-string">'Options'</span>); <span class="hljs-comment">// debug call</span>
+    <span class="hljs-keyword">var</span> out_dir = options.out_dir;
+    <span class="hljs-keyword">var</span> meta_dir = options.meta_dir;
+    <span class="hljs-keyword">var</span> paths = options.paths;
+    <span class="hljs-keyword">var</span> files = options.in_files || {};
+    <span class="hljs-keyword">var</span> sub_task_options = {};
 
-            <span class="hljs-keyword">if</span>( meta_manager.is_fresh(meta_file) == <span class="hljs-literal">false</span>
-                &amp;&amp; meta_manager.is_fresh(meta_infile,current_task_name+src_file) == <span class="hljs-literal">false</span> ){
+    <span class="hljs-keyword">var</span> current_task_name = <span class="hljs-string">"phantomizer-imgopt"</span>;
 
-                <span class="hljs-keyword">var</span> file = find_in_paths(paths,src_file);
 
-                <span class="hljs-keyword">var</span> deps = [];
-                deps.push(file);
+    <span class="hljs-keyword">var</span> meta_manager = <span class="hljs-keyword">new</span> meta_factory( wd, meta_dir );
 
-                <span class="hljs-keyword">if</span> ( grunt.file.exists(process.cwd()+<span class="hljs-string">"/Gruntfile.js"</span>)) {
-                    deps.push(process.cwd()+<span class="hljs-string">"/Gruntfile.js"</span>)
-                }
-                <span class="hljs-keyword">if</span> ( grunt.file.exists(user_config.project_dir+<span class="hljs-string">"/../config.json"</span>)) {
-                    deps.push( user_config.project_dir+<span class="hljs-string">"/../config.json"</span>)
-                }
-                deps.push(__filename);
+    <span class="hljs-keyword">for</span>( <span class="hljs-keyword">var</span> src_file <span class="hljs-keyword">in</span> files ){
+      <span class="hljs-keyword">var</span> out_file = out_dir+<span class="hljs-string">"/"</span>+files[src_file];
+      <span class="hljs-keyword">var</span> meta_file = <span class="hljs-string">"/"</span>+files[src_file]+<span class="hljs-string">""</span>;
+      <span class="hljs-keyword">var</span> meta_infile = src_file+<span class="hljs-string">""</span>;
 
-                <span class="hljs-keyword">var</span> sub_task_name = <span class="hljs-string">"jit"</span>+sub_tasks.length;
-                sub_task_options[sub_task_name] = {
-                    options: {
-                        optimizationLevel: options.optimizationLevel
-                        ,progressive: options.progressive
-                    },
-                    files: {
-                    }
-                }
-                sub_task_options[sub_task_name].files[out_file] = file;
-                grunt.log.ok(<span class="hljs-string">"Creating "</span>+out_file)
-                grunt.log.ok(<span class="hljs-string">"optimizationLevel:"</span>+options.optimizationLevel)</pre></div>
+      <span class="hljs-keyword">if</span>( meta_manager.is_fresh(meta_file) == <span class="hljs-literal">false</span>
+        &amp;&amp; meta_manager.is_fresh(meta_infile,current_task_name+src_file) == <span class="hljs-literal">false</span> ){
+
+        <span class="hljs-keyword">var</span> file = find_in_paths(paths,src_file);
+
+        <span class="hljs-keyword">var</span> deps = [];
+        deps.push(file);
+
+        <span class="hljs-keyword">if</span> ( grunt.file.exists(process.cwd()+<span class="hljs-string">"/Gruntfile.js"</span>)) {
+          deps.push(process.cwd()+<span class="hljs-string">"/Gruntfile.js"</span>)
+        }
+        <span class="hljs-keyword">if</span> ( grunt.file.exists(user_config.project_dir+<span class="hljs-string">"/../config.json"</span>)) {
+          deps.push( user_config.project_dir+<span class="hljs-string">"/../config.json"</span>)
+        }
+        deps.push(__filename);
+
+        <span class="hljs-keyword">var</span> sub_task_name = <span class="hljs-string">"jit"</span>+sub_tasks.length;
+        sub_task_options[sub_task_name] = {
+          options: {
+            cache: options.cache,
+            optimizationLevel: options.optimizationLevel
+            ,progressive: options.progressive
+          },
+          files: {
+          }
+        }
+        sub_task_options[sub_task_name].files[out_file] = file;
+        grunt.log.ok(<span class="hljs-string">"Creating "</span>+out_file)
+        grunt.log.ok(<span class="hljs-string">"optimizationLevel:"</span>+options.optimizationLevel)</pre></div>
         
       
         
         <p>create a cache entry, so that later we can regen or check freshness</p>
 
         
-          <div class='highlight'><pre>                <span class="hljs-keyword">var</span> entry = meta_manager.create(deps);
-                entry.require_task(current_grunt_task, options);
-                entry.save(meta_file);</pre></div>
+          <div class='highlight'><pre>        <span class="hljs-keyword">var</span> entry = meta_manager.create(deps);
+        entry.require_task(current_grunt_task, options);
+        entry.save(meta_file);</pre></div>
         
       
         
@@ -112,84 +114,86 @@ module.exports = <span class="hljs-function"><span class="hljs-keyword">function
 
         
           <div class='highlight'><pre>
-                grunt.config.set(<span class="hljs-string">"imagemin"</span>, sub_task_options)
-                sub_tasks.push( <span class="hljs-string">"imagemin"</span>+<span class="hljs-string">":"</span>+sub_task_name )
-            }<span class="hljs-keyword">else</span>{
-                grunt.log.ok(<span class="hljs-string">"your build is fresh !\n\t"</span>+out_file)
-            }
-        }
-
-        grunt.task.run( sub_tasks )
-    });
-
-
-    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">find_in_paths</span><span class="hljs-params">(paths, src)</span>{</span>
-        <span class="hljs-keyword">for</span>( <span class="hljs-keyword">var</span> t <span class="hljs-keyword">in</span> paths ){
-            <span class="hljs-keyword">if</span>( grunt.file.exists(paths[t]+src) ){
-                <span class="hljs-keyword">return</span> path.resolve(paths[t]+src)
-            }
-        }
-        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
+        grunt.config.set(<span class="hljs-string">"imagemin"</span>, sub_task_options)
+        sub_tasks.push( <span class="hljs-string">"imagemin"</span>+<span class="hljs-string">":"</span>+sub_task_name )
+      }<span class="hljs-keyword">else</span>{
+        grunt.log.ok(<span class="hljs-string">"your build is fresh !\n\t"</span>+out_file)
+      }
     }
 
-    grunt.registerMultiTask(<span class="hljs-string">"phantomizer-dir-imgopt"</span>, <span class="hljs-string">"Optimize png/jpeg pictures"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+    grunt.task.run( sub_tasks )
+  });
 
-        <span class="hljs-keyword">var</span> sub_tasks = []
-        <span class="hljs-keyword">var</span> current_target = <span class="hljs-keyword">this</span>.target;
 
-        <span class="hljs-keyword">var</span> options = <span class="hljs-keyword">this</span>.options({
-            optimizationLevel: <span class="hljs-number">7</span>
-            ,<span class="hljs-string">"progressive"</span>:<span class="hljs-literal">true</span>
-            ,<span class="hljs-string">"pngquant"</span>:<span class="hljs-literal">true</span>
-            ,<span class="hljs-string">"interlaced"</span>:<span class="hljs-literal">true</span>
-            ,paths: []
-            ,out_path: <span class="hljs-string">""</span>
-        });
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">find_in_paths</span><span class="hljs-params">(paths, src)</span>{</span>
+    <span class="hljs-keyword">for</span>( <span class="hljs-keyword">var</span> t <span class="hljs-keyword">in</span> paths ){
+      <span class="hljs-keyword">if</span>( grunt.file.exists(paths[t]+src) ){
+        <span class="hljs-keyword">return</span> path.resolve(paths[t]+src)
+      }
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
+  }
 
-        grunt.verbose.writeflags(options, <span class="hljs-string">'Options'</span>);
+  grunt.registerMultiTask(<span class="hljs-string">"phantomizer-dir-imgopt"</span>, <span class="hljs-string">"Optimize png/jpeg pictures"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
 
-        <span class="hljs-keyword">var</span> paths = options.paths;
-        <span class="hljs-keyword">var</span> out_path = options.out_path;
-        <span class="hljs-keyword">if</span>(paths.toLowerCase) paths = [paths];
+    <span class="hljs-keyword">var</span> sub_tasks = []
+    <span class="hljs-keyword">var</span> current_target = <span class="hljs-keyword">this</span>.target;
 
-        <span class="hljs-keyword">for</span>( <span class="hljs-keyword">var</span> n <span class="hljs-keyword">in</span> paths ){
-            <span class="hljs-keyword">var</span> p = paths[n];
-            <span class="hljs-keyword">var</span> sub_task_name = <span class="hljs-string">"imgmin"</span>+sub_tasks.length;
-
-            p = path.normalize(p);
-
-            <span class="hljs-keyword">var</span> sub_task_options = grunt.config.get(<span class="hljs-string">"imagemin"</span>) || {};
-            sub_task_options = clone_subtasks_options(sub_task_options, sub_task_name, current_target);
-            sub_task_options[sub_task_name].options.verbose = <span class="hljs-literal">true</span>;
-            sub_task_options[sub_task_name] = {
-                options: {
-                    optimizationLevel: options.optimizationLevel,
-                    progressive: options.progressive,
-                    pngquant: options.pngquant,
-                    interlaced: options.interlaced
-                },
-                files: [{
-                    expand: <span class="hljs-literal">true</span>,
-                    cwd: p+<span class="hljs-string">''</span>,
-                    src: [<span class="hljs-string">'**/*.{png,jpg,jpeg,gif}'</span>],
-                    dest: out_path
-                }]
-            };
-            grunt.log.ok(<span class="hljs-string">"Optimizing images\n\t"</span>+p);
-            grunt.config.set(<span class="hljs-string">"imagemin"</span>, sub_task_options)
-            sub_tasks.push( <span class="hljs-string">"imagemin"</span>+<span class="hljs-string">":"</span>+sub_task_name )
-        }
-
-        grunt.task.run( sub_tasks )
+    <span class="hljs-keyword">var</span> options = <span class="hljs-keyword">this</span>.options({
+      optimizationLevel: <span class="hljs-number">2</span>
+      ,<span class="hljs-string">"progressive"</span>:<span class="hljs-literal">true</span>
+      ,<span class="hljs-string">"cache"</span>:<span class="hljs-literal">false</span>
+      ,<span class="hljs-string">"pngquant"</span>:<span class="hljs-literal">true</span>
+      ,<span class="hljs-string">"interlaced"</span>:<span class="hljs-literal">true</span>
+      ,paths: []
+      ,out_path: <span class="hljs-string">""</span>
     });
 
-    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">clone_subtasks_options</span><span class="hljs-params">(task_options, task_name, current_target)</span>{</span>
-        <span class="hljs-keyword">var</span> _ = grunt.util._;
-        <span class="hljs-keyword">if</span>( task_options[current_target] ) task_options[task_name] = _.clone(task_options[current_target], <span class="hljs-literal">true</span>);
-        <span class="hljs-keyword">if</span>( !task_options[task_name] ) task_options[task_name] = {};
-        <span class="hljs-keyword">if</span>( !task_options[task_name].options ) task_options[task_name].options = {};
-        <span class="hljs-keyword">return</span> task_options;
+    grunt.verbose.writeflags(options, <span class="hljs-string">'Options'</span>);
+
+    <span class="hljs-keyword">var</span> paths = options.paths;
+    <span class="hljs-keyword">var</span> out_path = options.out_path;
+    <span class="hljs-keyword">if</span>(paths.toLowerCase) paths = [paths];
+
+    <span class="hljs-keyword">for</span>( <span class="hljs-keyword">var</span> n <span class="hljs-keyword">in</span> paths ){
+      <span class="hljs-keyword">var</span> p = paths[n];
+      <span class="hljs-keyword">var</span> sub_task_name = <span class="hljs-string">"imgmin"</span>+sub_tasks.length;
+
+      p = path.normalize(p);
+
+      <span class="hljs-keyword">var</span> sub_task_options = grunt.config.get(<span class="hljs-string">"imagemin"</span>) || {};
+      sub_task_options = clone_subtasks_options(sub_task_options, sub_task_name, current_target);
+      sub_task_options[sub_task_name].options.verbose = <span class="hljs-literal">true</span>;
+      sub_task_options[sub_task_name] = {
+        options: {
+          cache: options.cache,
+          optimizationLevel: options.optimizationLevel,
+          progressive: options.progressive,
+          pngquant: options.pngquant,
+          interlaced: options.interlaced
+        },
+        files: [{
+          expand: <span class="hljs-literal">true</span>,
+          cwd: p+<span class="hljs-string">''</span>,
+          src: [<span class="hljs-string">'**/*.{png,jpg,jpeg,gif}'</span>],
+          dest: out_path
+        }]
+      };
+      grunt.log.ok(<span class="hljs-string">"Optimizing images\n\t"</span>+p);
+      grunt.config.set(<span class="hljs-string">"imagemin"</span>, sub_task_options)
+      sub_tasks.push( <span class="hljs-string">"imagemin"</span>+<span class="hljs-string">":"</span>+sub_task_name )
     }
+
+    grunt.task.run( sub_tasks )
+  });
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">clone_subtasks_options</span><span class="hljs-params">(task_options, task_name, current_target)</span>{</span>
+    <span class="hljs-keyword">var</span> _ = grunt.util._;
+    <span class="hljs-keyword">if</span>( task_options[current_target] ) task_options[task_name] = _.clone(task_options[current_target], <span class="hljs-literal">true</span>);
+    <span class="hljs-keyword">if</span>( !task_options[task_name] ) task_options[task_name] = {};
+    <span class="hljs-keyword">if</span>( !task_options[task_name].options ) task_options[task_name].options = {};
+    <span class="hljs-keyword">return</span> task_options;
+  }
 
 };</pre></div>
         
