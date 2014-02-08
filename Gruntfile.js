@@ -76,8 +76,6 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.loadNpmTasks('phantomizer-imgopt');
-
   /*
 
    grunt.registerTask('default',
