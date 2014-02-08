@@ -15,8 +15,8 @@
   },
   "dependencies": {
     "grunt": "0.4.x",
-    "grunt-contrib-imagemin": "0.5.x",
-    "phantomizer-libutil": "git://github.com/maboiteaspam/phantomizer-libutil.git"
+    "grunt-contrib-imagemin": "maboiteaspam/grunt-contrib-imagemin",
+    "phantomizer-libutil": "maboiteaspam/phantomizer-libutil"
   },
   "devDependencies": {
     "docco": "jashkenas/docco",

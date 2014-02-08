@@ -115,6 +115,7 @@ module.exports = function(grunt) {
       ,paths: []
       ,out_path: ""
       ,pattern: '**/*.{png,jpg,jpeg,gif}'
+      ,outputFormat: "progress"
     });
 
     grunt.verbose.writeflags(options, 'Options');
@@ -138,7 +139,8 @@ module.exports = function(grunt) {
           optimizationLevel: options.optimizationLevel,
           progressive: options.progressive,
           pngquant: options.pngquant,
-          interlaced: options.interlaced
+          interlaced: options.interlaced,
+          outputFormat: options.outputFormat
         },
         files: [{
           expand: true,
