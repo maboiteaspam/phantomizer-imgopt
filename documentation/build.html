@@ -147,6 +147,8 @@ module.exports = <span class="hljs-function"><span class="hljs-keyword">function
       ,<span class="hljs-string">"interlaced"</span>:<span class="hljs-literal">true</span>
       ,paths: []
       ,out_path: <span class="hljs-string">""</span>
+      ,pattern: <span class="hljs-string">'**/*.{png,jpg,jpeg,gif}'</span>
+      ,outputFormat: <span class="hljs-string">"progress"</span>
     });
 
     grunt.verbose.writeflags(options, <span class="hljs-string">'Options'</span>);
@@ -170,12 +172,13 @@ module.exports = <span class="hljs-function"><span class="hljs-keyword">function
           optimizationLevel: options.optimizationLevel,
           progressive: options.progressive,
           pngquant: options.pngquant,
-          interlaced: options.interlaced
+          interlaced: options.interlaced,
+          outputFormat: options.outputFormat
         },
         files: [{
           expand: <span class="hljs-literal">true</span>,
           cwd: p+<span class="hljs-string">''</span>,
-          src: [<span class="hljs-string">'**/*.{png,jpg,jpeg,gif}'</span>],
+          src: options.pattern,
           dest: out_path
         }]
       };
