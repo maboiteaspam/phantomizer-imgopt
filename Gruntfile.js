@@ -43,7 +43,6 @@ module.exports = function(grunt) {
     docco: {
       debug: {
         src: [
-          'lib/htmlcompressor.js',
           'tasks/build.js'
         ],
         options: {
@@ -68,7 +67,7 @@ module.exports = function(grunt) {
         npmtag: true,
         tagName: '<%= version %>',
         github: {
-          repo: 'maboiteaspam/phantomizer-grunt',
+          repo: 'maboiteaspam/phantomizer-imgopt',
           usernameVar: 'GITHUB_USERNAME',
           passwordVar: 'GITHUB_PASSWORD'
         }
