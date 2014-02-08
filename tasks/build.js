@@ -114,6 +114,7 @@ module.exports = function(grunt) {
       ,"interlaced":true
       ,paths: []
       ,out_path: ""
+      ,pattern: '**/*.{png,jpg,jpeg,gif}'
     });
 
     grunt.verbose.writeflags(options, 'Options');
@@ -142,7 +143,7 @@ module.exports = function(grunt) {
         files: [{
           expand: true,
           cwd: p+'',
-          src: ['**/*.{png,jpg,jpeg,gif}'],
+          src: options.pattern,
           dest: out_path
         }]
       };
