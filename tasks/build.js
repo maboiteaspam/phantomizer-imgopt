@@ -12,24 +12,17 @@ module.exports = function(grunt) {
     var current_grunt_task = this.nameArgs;
     var user_config = grunt.config();
 
-    var meta_factory = ph_libutil.meta;
-
-    var wd = process.cwd();
-
-
     var options = this.options({
       optimizationLevel: 0
       ,"progressive":true
       ,"cache":false
       ,out_dir: ""
-      ,meta_dir: ""
       ,paths: []
       ,in_files: {}
     });
 
     grunt.verbose.writeflags(options, 'Options'); // debug call
     var out_dir = options.out_dir;
-    var meta_dir = options.meta_dir;
     var paths = options.paths;
     var files = options.in_files || {};
     var sub_task_options = {};
@@ -37,7 +30,8 @@ module.exports = function(grunt) {
     var current_task_name = "phantomizer-imgopt";
 
 
-    var meta_manager = new meta_factory( wd, meta_dir );
+    var phantomizer = ph_libutil.get("main");
+    var meta_manager = phantomizer.get_meta_manager();
 
     for( var src_file in files ){
       var out_file = out_dir+"/"+files[src_file];
@@ -49,16 +43,12 @@ module.exports = function(grunt) {
 
         var file = find_in_paths(paths,src_file);
 
-        var deps = [];
-        deps.push(file);
-
-        if ( grunt.file.exists(process.cwd()+"/Gruntfile.js")) {
-          deps.push(process.cwd()+"/Gruntfile.js")
-        }
-        if ( grunt.file.exists(user_config.project_dir+"/../config.json")) {
-          deps.push( user_config.project_dir+"/../config.json")
-        }
-        deps.push(__filename);
+        // create a cache entry, so that later we can regen or check freshness
+        var entry = meta_manager.create([]);
+        entry.append_dependency( __filename )
+        entry.append_dependency( file )
+        entry.append_dependency( process.cwd()+"/Gruntfile.js")
+        entry.append_dependency( user_config.project_dir+"/../config.json")
 
         var sub_task_name = "jit"+sub_tasks.length;
         sub_task_options[sub_task_name] = {
@@ -74,8 +64,6 @@ module.exports = function(grunt) {
         grunt.log.ok("Creating "+out_file)
         grunt.log.ok("optimizationLevel:"+options.optimizationLevel)
 
-        // create a cache entry, so that later we can regen or check freshness
-        var entry = meta_manager.create(deps);
         entry.require_task(current_grunt_task, options);
         entry.save(meta_file);
 
