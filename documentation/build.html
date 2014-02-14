@@ -37,24 +37,17 @@ module.exports = <span class="hljs-function"><span class="hljs-keyword">function
     <span class="hljs-keyword">var</span> current_grunt_task = <span class="hljs-keyword">this</span>.nameArgs;
     <span class="hljs-keyword">var</span> user_config = grunt.config();
 
-    <span class="hljs-keyword">var</span> meta_factory = ph_libutil.meta;
-
-    <span class="hljs-keyword">var</span> wd = process.cwd();
-
-
     <span class="hljs-keyword">var</span> options = <span class="hljs-keyword">this</span>.options({
       optimizationLevel: <span class="hljs-number">0</span>
       ,<span class="hljs-string">"progressive"</span>:<span class="hljs-literal">true</span>
       ,<span class="hljs-string">"cache"</span>:<span class="hljs-literal">false</span>
       ,out_dir: <span class="hljs-string">""</span>
-      ,meta_dir: <span class="hljs-string">""</span>
       ,paths: []
       ,in_files: {}
     });
 
     grunt.verbose.writeflags(options, <span class="hljs-string">'Options'</span>); <span class="hljs-comment">// debug call</span>
     <span class="hljs-keyword">var</span> out_dir = options.out_dir;
-    <span class="hljs-keyword">var</span> meta_dir = options.meta_dir;
     <span class="hljs-keyword">var</span> paths = options.paths;
     <span class="hljs-keyword">var</span> files = options.in_files || {};
     <span class="hljs-keyword">var</span> sub_task_options = {};
@@ -62,7 +55,8 @@ module.exports = <span class="hljs-function"><span class="hljs-keyword">function
     <span class="hljs-keyword">var</span> current_task_name = <span class="hljs-string">"phantomizer-imgopt"</span>;
 
 
-    <span class="hljs-keyword">var</span> meta_manager = <span class="hljs-keyword">new</span> meta_factory( wd, meta_dir );
+    <span class="hljs-keyword">var</span> phantomizer = ph_libutil.get(<span class="hljs-string">"main"</span>);
+    <span class="hljs-keyword">var</span> meta_manager = phantomizer.get_meta_manager();
 
     <span class="hljs-keyword">for</span>( <span class="hljs-keyword">var</span> src_file <span class="hljs-keyword">in</span> files ){
       <span class="hljs-keyword">var</span> out_file = out_dir+<span class="hljs-string">"/"</span>+files[src_file];
@@ -72,18 +66,18 @@ module.exports = <span class="hljs-function"><span class="hljs-keyword">function
       <span class="hljs-keyword">if</span>( meta_manager.is_fresh(meta_file) == <span class="hljs-literal">false</span>
         &amp;&amp; meta_manager.is_fresh(meta_infile,current_task_name+src_file) == <span class="hljs-literal">false</span> ){
 
-        <span class="hljs-keyword">var</span> file = find_in_paths(paths,src_file);
+        <span class="hljs-keyword">var</span> file = find_in_paths(paths,src_file);</pre></div>
+        
+      
+        
+        <p>create a cache entry, so that later we can regen or check freshness</p>
 
-        <span class="hljs-keyword">var</span> deps = [];
-        deps.push(file);
-
-        <span class="hljs-keyword">if</span> ( grunt.file.exists(process.cwd()+<span class="hljs-string">"/Gruntfile.js"</span>)) {
-          deps.push(process.cwd()+<span class="hljs-string">"/Gruntfile.js"</span>)
-        }
-        <span class="hljs-keyword">if</span> ( grunt.file.exists(user_config.project_dir+<span class="hljs-string">"/../config.json"</span>)) {
-          deps.push( user_config.project_dir+<span class="hljs-string">"/../config.json"</span>)
-        }
-        deps.push(__filename);
+        
+          <div class='highlight'><pre>        <span class="hljs-keyword">var</span> entry = meta_manager.create([]);
+        entry.append_dependency( __filename )
+        entry.append_dependency( file )
+        entry.append_dependency( process.cwd()+<span class="hljs-string">"/Gruntfile.js"</span>)
+        entry.append_dependency( user_config.project_dir+<span class="hljs-string">"/../config.json"</span>)
 
         <span class="hljs-keyword">var</span> sub_task_name = <span class="hljs-string">"jit"</span>+sub_tasks.length;
         sub_task_options[sub_task_name] = {
@@ -97,14 +91,8 @@ module.exports = <span class="hljs-function"><span class="hljs-keyword">function
         }
         sub_task_options[sub_task_name].files[out_file] = file;
         grunt.log.ok(<span class="hljs-string">"Creating "</span>+out_file)
-        grunt.log.ok(<span class="hljs-string">"optimizationLevel:"</span>+options.optimizationLevel)</pre></div>
-        
-      
-        
-        <p>create a cache entry, so that later we can regen or check freshness</p>
+        grunt.log.ok(<span class="hljs-string">"optimizationLevel:"</span>+options.optimizationLevel)
 
-        
-          <div class='highlight'><pre>        <span class="hljs-keyword">var</span> entry = meta_manager.create(deps);
         entry.require_task(current_grunt_task, options);
         entry.save(meta_file);</pre></div>
         
