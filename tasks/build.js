@@ -30,7 +30,8 @@ module.exports = function(grunt) {
     var current_task_name = "phantomizer-imgopt";
 
 
-    var phantomizer = ph_libutil.get("main");
+    var Phantomizer = ph_libutil.Phantomizer;
+    var phantomizer = new Phantomizer(process.cwd(),grunt);
     var meta_manager = phantomizer.get_meta_manager();
 
     for( var src_file in files ){
