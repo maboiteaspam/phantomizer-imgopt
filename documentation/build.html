@@ -55,7 +55,8 @@ module.exports = <span class="hljs-function"><span class="hljs-keyword">function
     <span class="hljs-keyword">var</span> current_task_name = <span class="hljs-string">"phantomizer-imgopt"</span>;
 
 
-    <span class="hljs-keyword">var</span> phantomizer = ph_libutil.get(<span class="hljs-string">"main"</span>);
+    <span class="hljs-keyword">var</span> Phantomizer = ph_libutil.Phantomizer;
+    <span class="hljs-keyword">var</span> phantomizer = <span class="hljs-keyword">new</span> Phantomizer(process.cwd(),grunt);
     <span class="hljs-keyword">var</span> meta_manager = phantomizer.get_meta_manager();
 
     <span class="hljs-keyword">for</span>( <span class="hljs-keyword">var</span> src_file <span class="hljs-keyword">in</span> files ){
