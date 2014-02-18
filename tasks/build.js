@@ -10,7 +10,6 @@ module.exports = function(grunt) {
 
     var sub_tasks = []
     var current_grunt_task = this.nameArgs;
-    var user_config = grunt.config();
 
     var options = this.options({
       optimizationLevel: 0
@@ -48,8 +47,6 @@ module.exports = function(grunt) {
         var entry = meta_manager.create([]);
         entry.append_dependency( __filename )
         entry.append_dependency( file )
-        entry.append_dependency( process.cwd()+"/Gruntfile.js")
-        entry.append_dependency( user_config.project_dir+"/../config.json")
 
         var sub_task_name = "jit"+sub_tasks.length;
         sub_task_options[sub_task_name] = {
