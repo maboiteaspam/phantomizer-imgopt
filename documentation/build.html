@@ -35,7 +35,6 @@ module.exports = <span class="hljs-function"><span class="hljs-keyword">function
 
     <span class="hljs-keyword">var</span> sub_tasks = []
     <span class="hljs-keyword">var</span> current_grunt_task = <span class="hljs-keyword">this</span>.nameArgs;
-    <span class="hljs-keyword">var</span> user_config = grunt.config();
 
     <span class="hljs-keyword">var</span> options = <span class="hljs-keyword">this</span>.options({
       optimizationLevel: <span class="hljs-number">0</span>
@@ -77,8 +76,6 @@ module.exports = <span class="hljs-function"><span class="hljs-keyword">function
           <div class='highlight'><pre>        <span class="hljs-keyword">var</span> entry = meta_manager.create([]);
         entry.append_dependency( __filename )
         entry.append_dependency( file )
-        entry.append_dependency( process.cwd()+<span class="hljs-string">"/Gruntfile.js"</span>)
-        entry.append_dependency( user_config.project_dir+<span class="hljs-string">"/../config.json"</span>)
 
         <span class="hljs-keyword">var</span> sub_task_name = <span class="hljs-string">"jit"</span>+sub_tasks.length;
         sub_task_options[sub_task_name] = {
